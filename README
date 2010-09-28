@@ -1,0 +1,16 @@
+menzy.sh
+========
+
+Skript stáhne z webu http://www.kam.vutbr.cz/ informace o aktuálně otevřených
+menzách, vyparsuje HTML kod z webovych stranek a zobrazí jejich seznam.
+
+Po zadání ID menzy vypíše obdobným způsobem i seznam jídel.
+
+Skript je prozatím čistě konzolový.
+
+
+TODO:
+  - zlepšit výpis do konzole
+  - okomentovat skript
+  - přidat přepínače (minimálně "--help")
+
