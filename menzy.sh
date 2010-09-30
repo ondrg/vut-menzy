@@ -12,6 +12,7 @@
 # Globalni promenne
 #
 STH_URL="http://www.kam.vutbr.cz"  # URL webu s udaji
+FORMAT=1
 
 
 
@@ -24,7 +25,22 @@ print_help()
 pouziti: $0 [parametr1 [...]]
 parametry:
   -h, --help  Vypise tuto napovedu
-  -j ID       Vypise jidelnicek menzy s identifikatorem ID"
+  -j ID       Vypise jidelnicek menzy s identifikatorem ID
+              Nelze kombinovat s prepinacem '-m'
+  -m          Vypise pouze seznam otevrenych menz
+              Nelze kombinovat s prepinacem '-j'
+  -nf         Vypise data bez formatovani (sloupce odelene tabulatorem)"
+}
+
+
+#
+# Vypise chybovou hlasku na stderr
+# @param $1 text, ktery se ma vypsat
+#
+print_error()
+{
+  echo "$1" >&2
+  echo "Pro napovedu pouzijte parametr -h nebo --help." >&2
 }
 
 
@@ -38,13 +54,18 @@ print_students_halls()
   | sed 's/^[ \t]*//;s/[ \t]*$//;s/<a name="menza//;s/"><\/a><h2>/\t/;
          s/<span\(.*\)<small> (/\t(/;s/&#8211;/-/;s/) /)\t/;
          s/<\/small><\/span><\/h2><p>\(.*\)$//;'`
-  #| awk -F "\t" '{ printf("%3s | %-30s %16s %-40s\n", $1, $2, $3, $4) }'
+
+  # naformatovani vystupu, pokud je zapnuto (defaultne ano)
+  if [ "$FORMAT" -eq 1 ]; then
+    result=`echo "$result" \
+    | awk -F "\t" '{ printf("%3s | %-30s %16s %-40s\n", $1, $2, $3, $4) }'`
+  fi
 
   # pokud je pocet vracenych znaku prilis maly
   if [ `echo "$result" | wc -c` -gt 10 ]; then
     echo "$result"
   else
-    echo "Seznam otevrenych menz je prazdny."
+    echo "Zadna menza neni momentalne otevrena."
     return 1
   fi
 }
@@ -56,10 +77,28 @@ print_students_halls()
 #
 print_menu()
 {
-  wget -O - -q "$STH_URL/?p=menu&provoz=$1" \
+  result=`wget -O - -q "$STH_URL/?p=menu&provoz=$1" \
   | grep '^<tr id="r[0-9]' \
-  | sed 's/^[ \t]*//;s/[ \t]*$//;s/<tr\(.*\)<br\/><\/span>//;s/<span class="gram"\(.*\) onClick="slo([0-9]\+)">/\t/;s/<\/td><td class="pravy slcen[0-9]\?">/\t/g;s/,-&nbsp;//g;s/<\/td><\/tr>\(.*\)//' \
-  #| awk -F "\t" '{ printf("%15s | %-50s | %5s %5s %5s\n", $1, $2, $3, $4, $5) }'
+  | sed 's/^[ \t]*//;s/[ \t]*$//;s/<tr\(.*\)<br\/><\/span>//;
+         s/<span class="gram"\(.*\) onClick="slo([0-9]\+)">/\t/;
+         s/<\/td><td class="pravy slcen[0-9]\?">/\t/g;s/,-&nbsp;//g;
+         s/<\/td><\/tr>\(.*\)//'`
+
+  # naformatovani vystupu, pokud je zapnuto (defaultne ano)
+  if [ "$FORMAT" -eq 1 ]; then
+    result=`echo "$result" \
+    | awk -F "\t" '{
+      printf("%15s | %-50s | %5s %5s %5s\n", $1, $2, $3, $4, $5)
+    }'`
+  fi
+
+  # pokud je pocet vracenych znaku prilis maly
+  if [ `echo "$result" | wc -c` -gt 10 ]; then
+    echo "$result"
+  else
+    echo "Stravovaci provoz nezverejnil aktualni nabidku."
+    return 1
+  fi
 }
 
 
@@ -79,22 +118,39 @@ while [ "$#" -gt "0" ]; do
     # zobrazeni jidelniho listku
     '-j')
       shift
-      if [ "$1" -eq "$1" 2> /dev/null ]; then  # overeni numericke hodnoty
+      # overeni numericke hodnoty (musi byt vetsi nez 0)
+      if [ "$1" -eq "$1" 2> /dev/null ] && [ "$1" -gt 0 ]; then
         menza_id="$1"
       else
+        echo $1
         echo "Chybna hodnota parametru -j. Je treba zadat kladne cislo." >&2
         exit 1
       fi
-      break;
+      ;;
+    # zobrazeni vypisu otevrenych menz
+    '-m')
+      print_only_sth=1
+      ;;
+    # vystup nebude formatovan do hezkeho formatu
+    '-nf')
+      FORMAT=0
       ;;
     # spatny prikaz
     *)
-      echo "Chybne zadani prikazu." \
-           "Pro napovedu pouzijte parametr -h nebo --help." >&2
+      print_error "Chyba v parametru '$1'"
       exit 1
       ;;
    esac
+
+   shift  # presun na dalsi parametr
 done
+
+
+# pokud byly zadany dva kolidujici parametry
+if [ "$menza_id" ] && [ "$print_only_sth" ]; then
+  print_error "Parametry '-m' a '-j' nelze kominovat."
+  exit 1
+fi
 
 
 
@@ -102,6 +158,8 @@ done
 
 if [ "$menza_id" ]; then  # bylo zadano ID menzy
   print_menu "$menza_id"
+elif [ "$print_only_sth" ]; then  # bylo nastaveno vypsani otevrenych menz
+  print_students_halls
 else  # nebylo zadano ID menzy
   print_students_halls
 
