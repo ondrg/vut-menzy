@@ -21,7 +21,7 @@ FORMAT=1
 #
 print_help()
 {
-  echo "Skript vypise otevrene menzy nebo jejich jidelnicky v ramci VUT Brno
+  echo "Skript vypise otevrene menzy nebo jejich jidelnicky v ramci VUT Brno.
 pouziti: $0 [parametr1 [...]]
 parametry:
   -h, --help  Vypise tuto napovedu
@@ -29,7 +29,9 @@ parametry:
               Nelze kombinovat s prepinacem '-m'
   -m          Vypise pouze seznam otevrenych menz
               Nelze kombinovat s prepinacem '-j'
-  -nf         Vypise data bez formatovani (sloupce odelene tabulatorem)"
+  -nf         Vypise data bez formatovani (sloupce odelene tabulatorem)
+Bez parametru vypise seznam otevrenych menz (pokud nejake otevrene jsou),
+zepta se na ID menzy (stdin) a po zadani vypise jidelnicek dane menzy."
 }
 
 
@@ -55,19 +57,20 @@ print_students_halls()
          s/<span\(.*\)<small> (/\t(/;s/&#8211;/-/;s/) /)\t/;
          s/<\/small><\/span><\/h2><p>\(.*\)$//;'`
 
+  # pokud je pocet vracenych znaku prilis maly
+  if [ `echo "$result" | wc -c` -lt 10 ]; then
+    echo "Zadna menza neni momentalne otevrena."
+    return 1
+  fi
+
   # naformatovani vystupu, pokud je zapnuto (defaultne ano)
   if [ "$FORMAT" -eq 1 ]; then
     result=`echo "$result" \
     | awk -F "\t" '{ printf("%3s | %-30s %16s %-40s\n", $1, $2, $3, $4) }'`
   fi
 
-  # pokud je pocet vracenych znaku prilis maly
-  if [ `echo "$result" | wc -c` -gt 10 ]; then
-    echo "$result"
-  else
-    echo "Zadna menza neni momentalne otevrena."
-    return 1
-  fi
+  # vypsani vysledku na vystup
+  echo "$result";
 }
 
 
@@ -84,6 +87,12 @@ print_menu()
          s/<\/td><td class="pravy slcen[0-9]\?">/\t/g;s/,-&nbsp;//g;
          s/<\/td><\/tr>\(.*\)//'`
 
+  # pokud je pocet vracenych znaku prilis maly
+  if [ `echo "$result" | wc -c` -lt 10 ]; then
+    echo "Stravovaci provoz nezverejnil aktualni nabidku."
+    return 1
+  fi
+
   # naformatovani vystupu, pokud je zapnuto (defaultne ano)
   if [ "$FORMAT" -eq 1 ]; then
     result=`echo "$result" \
@@ -92,13 +101,8 @@ print_menu()
     }'`
   fi
 
-  # pokud je pocet vracenych znaku prilis maly
-  if [ `echo "$result" | wc -c` -gt 10 ]; then
-    echo "$result"
-  else
-    echo "Stravovaci provoz nezverejnil aktualni nabidku."
-    return 1
-  fi
+  # vypsani vysledku na vystup
+  echo "$result";
 }
 
 
@@ -122,7 +126,6 @@ while [ "$#" -gt "0" ]; do
       if [ "$1" -eq "$1" 2> /dev/null ] && [ "$1" -gt 0 ]; then
         menza_id="$1"
       else
-        echo $1
         echo "Chybna hodnota parametru -j. Je treba zadat kladne cislo." >&2
         exit 1
       fi
