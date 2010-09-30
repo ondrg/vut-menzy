@@ -8,3 +8,10 @@ Stejně tak získá a zobrazí dle ID menzy obsah jídelníčku.
 Více informací o použití skriptu poskytne nápověda:
 $ ./menzy.sh -h
 
+Zapojte se také!
+----------------
+Tento projekt je licencován jako svobodný software - to znamená, že jej můžete
+měnit, studovat a šířit pokud zachováte licenci. Budu velmi rád, pokud se do
+jeho vývoje jakkoliv zapojíte (třeba i napsáním tutorialu).
+Aktuální verzi najdete na http://github.com/ondrg/vut-menzy
+
