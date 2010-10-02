@@ -53,8 +53,8 @@ print_students_halls()
 {
   result=`wget -O - -q "$STH_URL/?p=jide" \
   | grep "^<a name=\"menza\(.*\)</a></p>" \
-  | sed 's/^[ \t]*//;s/[ \t]*$//;s/<a name="menza//;s/"><\/a><h2>/\t/;
-         s/<span\(.*\)<small> (/\t(/;s/&#8211;/-/;s/) /)\t/;
+  | sed 's/^[ 	]*//;s/[ 	]*$//;s/<a name="menza//;s/"><\/a><h2>/	/;
+         s/<span\(.*\)<small> (/	(/;s/&#8211;/-/;s/) /)	/;
          s/<\/small><\/span><\/h2><p>\(.*\)$//;'`
 
   # pokud je pocet vracenych znaku prilis maly
@@ -82,9 +82,9 @@ print_menu()
 {
   result=`wget -O - -q "$STH_URL/?p=menu&provoz=$1" \
   | grep '^<tr id="r[0-9]' \
-  | sed 's/^[ \t]*//;s/[ \t]*$//;s/<tr\(.*\)<br\/><\/span>//;
-         s/<span class="gram"\(.*\) onClick="slo([0-9]\+)">/\t/;
-         s/<\/td><td class="pravy slcen[0-9]\?">/\t/g;s/,-&nbsp;//g;
+  | sed 's/^[ 	]*//;s/[ 	]*$//;s/<tr\(.*\)<br\/><\/span>//;
+         s/<span class="gram"\(.*\) onClick="slo([0-9]\{1,3\})">/	/;
+         s/<\/td><td class="pravy slcen[123]">/	/g;s/,-&nbsp;//g;
          s/<\/td><\/tr>\(.*\)//'`
 
   # pokud je pocet vracenych znaku prilis maly
