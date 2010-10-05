@@ -15,11 +15,11 @@ Doporučované shelly:
 
 Potřebné utility:
  - awk
+ - curl
  - echo
  - grep
  - sed
  - wc
- - wget
 
 Zapojte se také!
 ----------------

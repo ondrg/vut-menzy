@@ -51,7 +51,7 @@ print_error()
 #
 print_students_halls()
 {
-  result=`wget -O - -q "$STH_URL/?p=jide" \
+  result=`curl --silent "$STH_URL/?p=jide" \
   | grep "^<a name=\"menza\(.*\)</a></p>" \
   | sed 's/^[ 	]*//;s/[ 	]*$//;s/<a name="menza//;s/"><\/a><h2>/	/;
          s/<span\(.*\)<small> (/	(/;s/&#8211;/-/;s/) /)	/;
@@ -80,7 +80,7 @@ print_students_halls()
 #
 print_menu()
 {
-  result=`wget -O - -q "$STH_URL/?p=menu&provoz=$1" \
+  result=`curl --silent "$STH_URL/?p=menu&provoz=$1" \
   | grep '^<tr id="r[0-9]' \
   | sed 's/^[ 	]*//;s/[ 	]*$//;s/<tr\(.*\)<br\/><\/span>//;
          s/<span class="gram"\(.*\) onClick="slo([0-9]\{1,3\})">/	/;
