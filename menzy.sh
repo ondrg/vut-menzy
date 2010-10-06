@@ -67,7 +67,7 @@ print_students_halls()
   # naformatovani vystupu, pokud je zapnuto (defaultne ano)
   if [ "$FORMAT" -eq 1 ]; then
     result=`echo "$result" \
-    | awk -F "\t" '{ printf("%3s | %-37s %15s  %s\n", $1, $2, $3, $4) }'`
+    | awk -F "\t" '{ printf("%3s | %-37s\t%15s  %s\n", $1, $2, $3, $4) }'`
   fi
 
   # vypsani vysledku na vystup
@@ -98,7 +98,7 @@ print_menu()
   if [ "$FORMAT" -eq 1 ]; then
     result=`echo "$result" \
     | awk -F "\t" '{
-      printf("%10s | %-60s | %4s %4s %4s\n", $1, $2, $3, $4, $5)
+      printf("%10s | %-60s\t| %4s %4s %4s\n", $1, $2, $3, $4, $5)
     }'`
   fi
 
