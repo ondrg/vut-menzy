@@ -5,6 +5,7 @@
 #
 # Autor:    Ondra Gersl, ondra.gersl@gmail.com
 # Licence:  GNU GPL v3 - http://www.gnu.org/licenses/gpl-3.0.txt
+# Web:      http://github.com/ondrg/vut-menzy
 #
 
 
@@ -51,7 +52,7 @@ print_error()
 #
 print_students_halls()
 {
-  result=`curl --silent "$STH_URL/?p=jide" \
+  result=`wget -q -O - "$STH_URL/?p=jide" \
   | grep "^<a name=\"menza\(.*\)</a></p>" \
   | sed 's/^[ 	]*//;s/[ 	]*$//;s/<a name="menza//;s/"><\/a><h2>/	/;
          s/<span\(.*\)<small> (/	(/;s/&#8211;/-/;s/) /)	/;
@@ -80,7 +81,7 @@ print_students_halls()
 #
 print_menu()
 {
-  result=`curl --silent "$STH_URL/?p=menu&provoz=$1" \
+  result=`wget -q -O - "$STH_URL/?p=menu&provoz=$1" \
   | grep '^<tr id="r[0-9]' \
   | sed 's/^[ 	]*//;s/[ 	]*$//;s/<tr\(.*\)<br\/><\/span>//;
          s/<span class="gram"\(.*\) onClick="slo([0-9]\{1,3\})">/	/;

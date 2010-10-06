@@ -15,11 +15,16 @@ Doporučované shelly:
 
 Potřebné utility:
  - awk
- - curl
  - echo
  - grep
  - sed
  - wc
+ - wget
+
+ Otestováno na systémech:
+  - různé GNU/Linuxové distribuce (Debian, Ubuntu, CentOS, Arch Linux)
+  - OpenSolaris 2009.06
+  - FreeBSD 8.1
 
 Zapojte se také!
 ----------------
