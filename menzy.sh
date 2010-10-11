@@ -98,7 +98,7 @@ print_menu()
   if [ "$FORMAT" -eq 1 ]; then
     result=`echo "$result" \
     | awk -F "\t" '{
-      printf("%10s | %-60s\t| %4s %4s %4s\n", $1, $2, $3, $4, $5)
+      printf("%10s | %-51s\t|%4s %4s %4s\n", $1, $2, $3, $4, $5)
     }'`
   fi
 
