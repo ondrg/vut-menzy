@@ -89,9 +89,16 @@ print_menu()
 {
   result=`wget -q -O - "$STH_URL/?p=menu&provoz=$1" \
   | grep '^<tr id="r[0-9]' \
-  | sed 's/^[ 	]*//;s/[ 	]*$//;s/<tr\(.*\)<br\/><\/span>//;
-         s/<span class="gram"\(.*\) onClick="slo([0-9]\{1,3\})">/	/;
-         s/<\/td><td class="pravy slcen[123]">/	/g;s/,-&nbsp;//g;
+  | sed 's/^[ 	]*//;
+         s/[ 	]*$//;
+         s/<tr\(.*\)levy">//;
+         s/&nbsp;&nbsp;<small>/	/;
+         s/&nbsp;<\/span>//;
+         s/&nbsp;g<\/small>/ g/;
+         s/<\/td><td class="levyjid fs[0-9]" onClick="slo([0-9]\{1,3\})">/	/;
+         s/<!-- [0-9] -->//;
+         s/<\/td><td class="pravy slcen[123]">/	/g;
+         s/,-&nbsp;//g;
          s/<\/td><\/tr>\(.*\)//'`
 
   # pokud je pocet vracenych znaku prilis maly
@@ -104,7 +111,7 @@ print_menu()
   if [ "$FORMAT" -eq 1 ]; then
     result=`echo "$result" \
     | awk -F "\t" '{
-      printf("%10s | %-51s\t|%4s %4s %4s\n", $1, $2, $3, $4, $5)
+      printf("%2s | %5s | %-51s\t|%4s %4s %4s\n", $1, $2, $3, $4, $5, $6)
     }'`
   fi
 
