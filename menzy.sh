@@ -54,8 +54,14 @@ print_students_halls()
 {
   result=`wget -q -O - "$STH_URL/?p=jide" \
   | grep "^<a name=\"menza\(.*\)</a></p>" \
-  | sed 's/^[ 	]*//;s/[ 	]*$//;s/<a name="menza//;s/"><\/a><h2>/	/;
-         s/<span\(.*\)<small> (/	(/;s/&#8211;/-/;s/) /)	/;
+  | sed 's/^[ 	]*//;
+         s/[ 	]*$//;
+         s/<a name="menza//;
+         s/"><\/a>/	/;
+         s/<h2><a href="\(.*\)black;">//;
+         s/<\/a><span\(.*\)<small> (/	(/;
+         s/&#8211;/-/;
+         s/) /)	/;
          s/<\/small><\/span><\/h2><p>\(.*\)$//;'`
 
   # pokud je pocet vracenych znaku prilis maly
